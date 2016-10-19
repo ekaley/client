@@ -39,7 +39,7 @@ func (c *Client) SendResource(method, path string, in interfaces.Resource) (stri
 	if err != nil {
 		return "", err
 	}
-	req, err := http.NewRequest(method, "http://"+c.Address+path, body)
+	req, err := http.NewRequest(method, c.Scheme+"://"+c.Address+path, body)
 	if err != nil {
 		return "", err
 	}
@@ -66,7 +66,7 @@ func (c *Client) SendResource(method, path string, in interfaces.Resource) (stri
 // ReceiveResource is used to receive the passed reasource type
 func (c *Client) ReceiveResource(method, path, rType, rVersion string) (interfaces.Resource, error) {
 
-	req, err := http.NewRequest(method, "http://"+c.Address+path, nil)
+	req, err := http.NewRequest(method, c.Scheme+"://"+c.Address+path, nil)
 
 	req.Header.Set(
 		"Content-Type",

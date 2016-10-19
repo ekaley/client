@@ -17,8 +17,8 @@ func (c *Client) Reservations() *Reservations {
 }
 
 // Index returns a list of Reservations.
-func (s *Reservations) Index(sLocation string) (resources.ReservationsV1, error) {
-	rReservations, err := s.c.ReceiveResource("GET", sLocation+"/reservations", "", "")
+func (s *Reservations) Index(sID string) (resources.ReservationsV1, error) {
+	rReservations, err := s.c.ReceiveResource("GET", "/subnets/"+sID+"/reservations", "", "")
 	if err != nil {
 		return resources.ReservationsV1{}, err
 	}
@@ -29,8 +29,8 @@ func (s *Reservations) Index(sLocation string) (resources.ReservationsV1, error)
 }
 
 // Create a Reservation and return the location.
-func (s *Reservations) Create(sLocation string, rReservation resources.ReservationV1) (string, error) {
-	rLocation, err := s.c.SendResource("POST", sLocation+"/reservations", &rReservation)
+func (s *Reservations) Create(sID string, rReservation resources.ReservationV1) (string, error) {
+	rLocation, err := s.c.SendResource("POST", "/subnets/"+sID+"/reservations", &rReservation)
 	if err != nil {
 		return "", err
 	}
@@ -38,8 +38,8 @@ func (s *Reservations) Create(sLocation string, rReservation resources.Reservati
 }
 
 // CreateShowReservation creates a Reservation and then returns that Reservation.
-func (s *Reservations) CreateShowReservation(sLocation string, rReservation resources.ReservationV1) (resources.ReservationV1, error) {
-	rReservationOut, err := s.c.SendReceiveResource("POST", "GET", sLocation+"/reservations", &rReservation)
+func (s *Reservations) CreateShowReservation(sID string, rReservation resources.ReservationV1) (resources.ReservationV1, error) {
+	rReservationOut, err := s.c.SendReceiveResource("POST", "GET", "/subnets/"+sID+"/reservations", &rReservation)
 	if err != nil {
 		return resources.ReservationV1{}, err
 	}
@@ -62,8 +62,8 @@ func (s *Reservations) Show(rID string, rReservationIn resources.ReservationV1) 
 }
 
 // Update updates the requested Reservation and returns its location.
-func (s *Reservations) Update(rLocation string, rReservation resources.ReservationV1) (string, error) {
-	rLocation, err := s.c.SendResource("PATCH", rLocation, &rReservation)
+func (s *Reservations) Update(rID string, rReservation resources.ReservationV1) (string, error) {
+	rLocation, err := s.c.SendResource("PATCH", "/reservations"+rID, &rReservation)
 	if err != nil {
 		return "", err
 	}
@@ -71,8 +71,8 @@ func (s *Reservations) Update(rLocation string, rReservation resources.Reservati
 }
 
 // UpdateShowReservation updates a Reservation and then returns that Reservation.
-func (s *Reservations) UpdateShowReservation(rLocation string, rReservation resources.ReservationV1) (resources.ReservationV1, error) {
-	rReservationOut, err := s.c.SendReceiveResource("PATCH", "GET", rLocation, &rReservation)
+func (s *Reservations) UpdateShowReservation(rID string, rReservation resources.ReservationV1) (resources.ReservationV1, error) {
+	rReservationOut, err := s.c.SendReceiveResource("PATCH", "GET", "/reservations"+rID, &rReservation)
 	if err != nil {
 		return resources.ReservationV1{}, err
 	}
@@ -83,8 +83,8 @@ func (s *Reservations) UpdateShowReservation(rLocation string, rReservation reso
 }
 
 // Delete removed the requested Reservation and returns the location.
-func (s *Reservations) Delete(rLocation string, rReservation resources.ReservationV1) (string, error) {
-	rLocation, err := s.c.SendResource("DELETE", rLocation, &rReservation)
+func (s *Reservations) Delete(rID string, rReservation resources.ReservationV1) (string, error) {
+	rLocation, err := s.c.SendResource("DELETE", "/reservations"+rID, &rReservation)
 	if err != nil {
 		return "", err
 	}

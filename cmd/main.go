@@ -59,12 +59,30 @@ func main() {
 
 	reservation, err := r.CreateShowReservation("/subnets/"+subnet.ID, *rReservation)
 	if err == nil {
-		fmt.Printf("%+v\n", reservation)
+		fmt.Printf("%+v\n\n", reservation)
 	}
 
 	time.Sleep(2 * time.Second)
 	//New Leases
 	l := c.Leases()
+
+	pI, err := p.Index()
+	if err != nil {
+	}
+	fmt.Printf("%+v\n\n", pI)
+	time.Sleep(2 * time.Second)
+
+	sI, err := s.Index("/pools/" + pool.ID)
+	if err != nil {
+	}
+	fmt.Printf("%+v\n\n", sI)
+	time.Sleep(2 * time.Second)
+
+	rI, err := r.Index("/subnets/" + subnet.ID)
+	if err != nil {
+	}
+	fmt.Printf("%+v\n\n", rI)
+	time.Sleep(2 * time.Second)
 
 	leases, err := l.Index("/reservations/" + reservation.ID)
 	if err == nil {
