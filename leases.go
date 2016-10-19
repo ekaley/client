@@ -17,8 +17,8 @@ func (c *Client) Leases() *Leases {
 }
 
 // Index returns a list of Leases.
-func (s *Leases) Index(rLocation string) (resources.LeasesV1, error) {
-	rLeases, err := s.c.ReceiveResource("GET", rLocation+"/leases", "", "")
+func (s *Leases) Index(rID string) (resources.LeasesV1, error) {
+	rLeases, err := s.c.ReceiveResource("GET", "/reservations"+rID+"/leases", "", "")
 	if err != nil {
 		return resources.LeasesV1{}, err
 	}
@@ -29,8 +29,8 @@ func (s *Leases) Index(rLocation string) (resources.LeasesV1, error) {
 }
 
 // Show returns the requested Lease.
-func (s *Leases) Show(lLocation string, rLeaseIn resources.LeaseV1) (resources.LeaseV1, error) {
-	rLeaseOut, err := s.c.ReceiveResource("GET", lLocation, rLeaseIn.Type(), rLeaseIn.Version())
+func (s *Leases) Show(lID string, rLeaseIn resources.LeaseV1) (resources.LeaseV1, error) {
+	rLeaseOut, err := s.c.ReceiveResource("GET", "/leases/"+lID, rLeaseIn.Type(), rLeaseIn.Version())
 	if err != nil {
 		return resources.LeaseV1{}, err
 	}
@@ -41,8 +41,8 @@ func (s *Leases) Show(lLocation string, rLeaseIn resources.LeaseV1) (resources.L
 }
 
 // Update updates the requested Lease and returns its location.
-func (s *Leases) Update(lLocation string, rLease resources.LeaseV1) (string, error) {
-	lLocation, err := s.c.SendResource("PATCH", lLocation, &rLease)
+func (s *Leases) Update(lID string, rLease resources.LeaseV1) (string, error) {
+	lLocation, err := s.c.SendResource("PATCH", "/leases/"+lID, &rLease)
 	if err != nil {
 		return "", err
 	}
@@ -50,8 +50,8 @@ func (s *Leases) Update(lLocation string, rLease resources.LeaseV1) (string, err
 }
 
 // UpdateShowLease updates a Lease and then returns that Lease.
-func (s *Leases) UpdateShowLease(lLocation string, rLease resources.LeaseV1) (resources.LeaseV1, error) {
-	rLeaseOut, err := s.c.SendReceiveResource("PATCH", "GET", lLocation, &rLease)
+func (s *Leases) UpdateShowLease(lID string, rLease resources.LeaseV1) (resources.LeaseV1, error) {
+	rLeaseOut, err := s.c.SendReceiveResource("PATCH", "GET", "/leases/"+lID, &rLease)
 	if err != nil {
 		return resources.LeaseV1{}, err
 	}

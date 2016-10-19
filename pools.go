@@ -50,8 +50,8 @@ func (p *Pools) CreateShowPool(rPool resources.PoolV1) (resources.PoolV1, error)
 }
 
 // Show returns the requested Pool.
-func (p *Pools) Show(pLocation string, rPoolIn resources.PoolV1) (resources.PoolV1, error) {
-	rPoolOut, err := p.c.ReceiveResource("GET", pLocation, rPoolIn.Type(), rPoolIn.Version())
+func (p *Pools) Show(pID string, rPoolIn resources.PoolV1) (resources.PoolV1, error) {
+	rPoolOut, err := p.c.ReceiveResource("GET", "/pools/"+pID, rPoolIn.Type(), rPoolIn.Version())
 	if err != nil {
 		return resources.PoolV1{}, err
 	}
@@ -62,8 +62,8 @@ func (p *Pools) Show(pLocation string, rPoolIn resources.PoolV1) (resources.Pool
 }
 
 // Update updates the requested Pool and returns its location.
-func (p *Pools) Update(pLocation string, rPool resources.PoolV1) (string, error) {
-	location, err := p.c.SendResource("PATCH", pLocation, &rPool)
+func (p *Pools) Update(pID string, rPool resources.PoolV1) (string, error) {
+	location, err := p.c.SendResource("PATCH", "/pools/"+pID, &rPool)
 	if err != nil {
 		return "", err
 	}
@@ -71,8 +71,8 @@ func (p *Pools) Update(pLocation string, rPool resources.PoolV1) (string, error)
 }
 
 // UpdateShowPool updates a pool and then returns that pool.
-func (p *Pools) UpdateShowPool(pLocation string, rPool resources.PoolV1) (resources.PoolV1, error) {
-	rPoolOut, err := p.c.SendReceiveResource("PATCH", "GET", pLocation, &rPool)
+func (p *Pools) UpdateShowPool(pID string, rPool resources.PoolV1) (resources.PoolV1, error) {
+	rPoolOut, err := p.c.SendReceiveResource("PATCH", "GET", "/pools/"+pID, &rPool)
 	if err != nil {
 		return resources.PoolV1{}, err
 	}
@@ -83,8 +83,8 @@ func (p *Pools) UpdateShowPool(pLocation string, rPool resources.PoolV1) (resour
 }
 
 // Delete removes the requested Pool and returns the location.
-func (p *Pools) Delete(pLocation string, rPool resources.PoolV1) (string, error) {
-	location, err := p.c.SendResource("DELETE", pLocation, &rPool)
+func (p *Pools) Delete(pID string, rPool resources.PoolV1) (string, error) {
+	location, err := p.c.SendResource("DELETE", "/pools/"+pID, &rPool)
 	if err != nil {
 		return "", err
 	}
