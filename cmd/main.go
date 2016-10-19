@@ -32,7 +32,7 @@ func main() {
 		fmt.Printf("%+v\n", pool)
 	}
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 	//New Subnets
 	s := c.Subnets()
 
@@ -43,12 +43,12 @@ func main() {
 		End:   "192.168.1.20",
 	}
 
-	subnet, err := s.CreateShowSubnet("/pools/"+pool.ID, *rSubnet)
+	subnet, err := s.CreateShowSubnet(pool.ID, *rSubnet)
 	if err == nil {
 		fmt.Printf("%+v\n", subnet)
 	}
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 	//New Reservations
 	r := c.Reservations()
 
@@ -57,12 +57,12 @@ func main() {
 		Subnet: subnet.ID,
 	}
 
-	reservation, err := r.CreateShowReservation("/subnets/"+subnet.ID, *rReservation)
+	reservation, err := r.CreateShowReservation(subnet.ID, *rReservation)
 	if err == nil {
 		fmt.Printf("%+v\n\n", reservation)
 	}
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 	//New Leases
 	l := c.Leases()
 
@@ -70,24 +70,24 @@ func main() {
 	if err != nil {
 	}
 	fmt.Printf("%+v\n\n", pI)
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 
-	sI, err := s.Index("/pools/" + pool.ID)
+	sI, err := s.Index(pool.ID)
 	if err != nil {
 	}
 	fmt.Printf("%+v\n\n", sI)
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 
-	rI, err := r.Index("/subnets/" + subnet.ID)
+	rI, err := r.Index(subnet.ID)
 	if err != nil {
 	}
 	fmt.Printf("%+v\n\n", rI)
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 
-	leases, err := l.Index("/reservations/" + reservation.ID)
-	if err == nil {
-		fmt.Printf("%+v\n", leases)
+	lI, err := l.Index(reservation.ID)
+	if err != nil {
 	}
+	fmt.Printf("%+v\n\n", lI)
 
 	fmt.Println("Finished")
 	return

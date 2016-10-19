@@ -18,7 +18,7 @@ func (c *Client) Leases() *Leases {
 
 // Index returns a list of Leases.
 func (s *Leases) Index(rID string) (resources.LeasesV1, error) {
-	rLeases, err := s.c.ReceiveResource("GET", "/reservations"+rID+"/leases", "", "")
+	rLeases, err := s.c.ReceiveResource("GET", "/reservations/"+rID+"/leases", "", "")
 	if err != nil {
 		return resources.LeasesV1{}, err
 	}
