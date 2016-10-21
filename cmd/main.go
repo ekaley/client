@@ -48,6 +48,12 @@ func main() {
 		fmt.Printf("%+v\n", subnet)
 	}
 
+	sub, err := s.Show(subnet.ID, resources.SubnetV1{})
+
+	if err == nil {
+		fmt.Printf("%+v\n", sub)
+	}
+
 	time.Sleep(1 * time.Second)
 	//New Reservations
 	r := c.Reservations()

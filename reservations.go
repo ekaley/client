@@ -51,7 +51,7 @@ func (s *Reservations) CreateShowReservation(sID string, rReservation resources.
 
 // Show returns the requested Reservation.
 func (s *Reservations) Show(rID string, rReservationIn resources.ReservationV1) (resources.ReservationV1, error) {
-	rReservationOut, err := s.c.ReceiveResource("GET", "/reservations"+rID, rReservationIn.Type(), rReservationIn.Version())
+	rReservationOut, err := s.c.ReceiveResource("GET", "/reservations/"+rID, rReservationIn.Type(), rReservationIn.Version())
 	if err != nil {
 		return resources.ReservationV1{}, err
 	}
@@ -63,7 +63,7 @@ func (s *Reservations) Show(rID string, rReservationIn resources.ReservationV1) 
 
 // Update updates the requested Reservation and returns its location.
 func (s *Reservations) Update(rID string, rReservation resources.ReservationV1) (string, error) {
-	rLocation, err := s.c.SendResource("PATCH", "/reservations"+rID, &rReservation)
+	rLocation, err := s.c.SendResource("PATCH", "/reservations/"+rID, &rReservation)
 	if err != nil {
 		return "", err
 	}
@@ -72,7 +72,7 @@ func (s *Reservations) Update(rID string, rReservation resources.ReservationV1) 
 
 // UpdateShowReservation updates a Reservation and then returns that Reservation.
 func (s *Reservations) UpdateShowReservation(rID string, rReservation resources.ReservationV1) (resources.ReservationV1, error) {
-	rReservationOut, err := s.c.SendReceiveResource("PATCH", "GET", "/reservations"+rID, &rReservation)
+	rReservationOut, err := s.c.SendReceiveResource("PATCH", "GET", "/reservations/"+rID, &rReservation)
 	if err != nil {
 		return resources.ReservationV1{}, err
 	}
@@ -84,7 +84,7 @@ func (s *Reservations) UpdateShowReservation(rID string, rReservation resources.
 
 // Delete removed the requested Reservation and returns the location.
 func (s *Reservations) Delete(rID string, rReservation resources.ReservationV1) (string, error) {
-	rLocation, err := s.c.SendResource("DELETE", "/reservations"+rID, &rReservation)
+	rLocation, err := s.c.SendResource("DELETE", "/reservations/"+rID, &rReservation)
 	if err != nil {
 		return "", err
 	}
