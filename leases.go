@@ -11,11 +11,6 @@ type Leases struct {
 	client *Client
 }
 
-//Leases returns a handle to the Leases routes
-func (c *Client) Leases() *Leases {
-	return &Leases{c}
-}
-
 // Index returns a list of Leases.
 func (l *Leases) Index(reservationID string) (resources.LeasesV1, error) {
 	returnedLeases, err := l.client.ReceiveResource("GET", "/reservations/"+reservationID+"/leases", "", "")

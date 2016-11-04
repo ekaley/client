@@ -11,11 +11,6 @@ type Subnets struct {
 	client *Client
 }
 
-//Subnets returns a handle to the Subnets routes
-func (c *Client) Subnets() *Subnets {
-	return &Subnets{c}
-}
-
 // Index returns a list of Subnets.
 func (s *Subnets) Index(poolID string) (resources.SubnetsV1, error) {
 	receivedSubnets, err := s.client.ReceiveResource("GET", "/pools/"+poolID+"/subnets", "", "")

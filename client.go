@@ -32,6 +32,26 @@ func NewClient(address string) *Client {
 	return c
 }
 
+//Leases returns a handle to the Leases routes
+func (c *Client) Leases() *Leases {
+	return &Leases{c}
+}
+
+//Reservations returns a handle to the Reservations routes
+func (c *Client) Reservations() *Reservations {
+	return &Reservations{c}
+}
+
+//Subnets returns a handle to the Subnets routes
+func (c *Client) Subnets() *Subnets {
+	return &Subnets{c}
+}
+
+//Pools returns a handle to the Pools routes
+func (c *Client) Pools() *Pools {
+	return &Pools{c}
+}
+
 // SendResource is used to send a generic resource type
 func (c *Client) SendResource(method, path string, in interfaces.Resource) (string, error) {
 

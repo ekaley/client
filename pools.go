@@ -11,11 +11,6 @@ type Pools struct {
 	client *Client
 }
 
-//Pools returns a handle to the Pools routes
-func (c *Client) Pools() *Pools {
-	return &Pools{c}
-}
-
 // Index returns a list of Pools.
 func (p *Pools) Index() (resources.PoolsV1, error) {
 	rPools, err := p.client.ReceiveResource("GET", "/pools", "", "")

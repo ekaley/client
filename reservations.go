@@ -11,11 +11,6 @@ type Reservations struct {
 	client *Client
 }
 
-//Reservations returns a handle to the Reservations routes
-func (c *Client) Reservations() *Reservations {
-	return &Reservations{c}
-}
-
 // Index returns a list of Reservations.
 func (r *Reservations) Index(subnetID string) (resources.ReservationsV1, error) {
 	receivedReservations, err := r.client.ReceiveResource("GET", "/subnets/"+subnetID+"/reservations", "", "")
