@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/RackHD/ipam/resources"
 )
@@ -13,11 +14,11 @@ type Pools struct {
 
 // Index returns a list of Pools.
 func (p *Pools) Index() (resources.PoolsV1, error) {
-	rPools, err := p.client.ReceiveResource("GET", "/pools", "", "")
+	pools, err := p.client.ReceiveResource("GET", "/pools", "", "")
 	if err != nil {
 		return resources.PoolsV1{}, err
 	}
-	if pools, ok := rPools.(*resources.PoolsV1); ok {
+	if pools, ok := pools.(*resources.PoolsV1); ok {
 		return *pools, nil
 	}
 	return resources.PoolsV1{}, errors.New("Pool Index call error.")
@@ -25,6 +26,10 @@ func (p *Pools) Index() (resources.PoolsV1, error) {
 
 // Create a pool and returns the location.
 func (p *Pools) Create(poolToCreate resources.PoolV1) (string, error) {
+	if err := p.poolExists(poolToCreate.Name); err != nil {
+		return "", err
+	}
+
 	poolLocation, err := p.client.SendResource("POST", "/pools", &poolToCreate)
 	if err != nil {
 		return "", err
@@ -34,6 +39,10 @@ func (p *Pools) Create(poolToCreate resources.PoolV1) (string, error) {
 
 // CreateShowPool creates a pool and then returns that pool.
 func (p *Pools) CreateShowPool(poolToCreate resources.PoolV1) (resources.PoolV1, error) {
+	if err := p.poolExists(poolToCreate.Name); err != nil {
+		return resources.PoolV1{}, err
+	}
+
 	receivedPool, err := p.client.SendReceiveResource("POST", "GET", "/pools", &poolToCreate)
 	if err != nil {
 		return resources.PoolV1{}, err
@@ -45,8 +54,8 @@ func (p *Pools) CreateShowPool(poolToCreate resources.PoolV1) (resources.PoolV1,
 }
 
 // Show returns the requested Pool.
-func (p *Pools) Show(poolID string, rPoolIn resources.PoolV1) (resources.PoolV1, error) {
-	receivedPool, err := p.client.ReceiveResource("GET", "/pools/"+poolID, rPoolIn.Type(), rPoolIn.Version())
+func (p *Pools) Show(poolID string, poolToShow resources.PoolV1) (resources.PoolV1, error) {
+	receivedPool, err := p.client.ReceiveResource("GET", "/pools/"+poolID, poolToShow.Type(), poolToShow.Version())
 	if err != nil {
 		return resources.PoolV1{}, err
 	}
@@ -84,4 +93,19 @@ func (p *Pools) Delete(poolID string, poolToDelete resources.PoolV1) (string, er
 		return "", err
 	}
 	return location, nil
+}
+
+func (p *Pools) poolExists(name string) error {
+	checkThemPools, err := p.Index()
+	if err != nil {
+		return fmt.Errorf("Could not get list of pool names %s\n", err)
+	}
+
+	for _, v := range checkThemPools.Pools {
+		if v.Name == name {
+			return fmt.Errorf("Name %s already exists", name)
+		}
+	}
+
+	return nil
 }
