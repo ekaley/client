@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/RackHD/ipam/resources"
 )
@@ -26,9 +25,6 @@ func (p *Pools) Index() (resources.PoolsV1, error) {
 
 // Create a pool and returns the location.
 func (p *Pools) Create(poolToCreate resources.PoolV1) (string, error) {
-	if err := p.poolExists(poolToCreate.Name); err != nil {
-		return "", err
-	}
 
 	poolLocation, err := p.client.SendResource("POST", "/pools", &poolToCreate)
 	if err != nil {
@@ -39,10 +35,6 @@ func (p *Pools) Create(poolToCreate resources.PoolV1) (string, error) {
 
 // CreateShowPool creates a pool and then returns that pool.
 func (p *Pools) CreateShowPool(poolToCreate resources.PoolV1) (resources.PoolV1, error) {
-	if err := p.poolExists(poolToCreate.Name); err != nil {
-		return resources.PoolV1{}, err
-	}
-
 	receivedPool, err := p.client.SendReceiveResource("POST", "GET", "/pools", &poolToCreate)
 	if err != nil {
 		return resources.PoolV1{}, err
@@ -93,19 +85,4 @@ func (p *Pools) Delete(poolID string, poolToDelete resources.PoolV1) (string, er
 		return "", err
 	}
 	return location, nil
-}
-
-func (p *Pools) poolExists(name string) error {
-	checkThemPools, err := p.Index()
-	if err != nil {
-		return fmt.Errorf("Could not get list of pool names %s\n", err)
-	}
-
-	for _, v := range checkThemPools.Pools {
-		if v.Name == name {
-			return fmt.Errorf("Name %s already exists", name)
-		}
-	}
-
-	return nil
 }
