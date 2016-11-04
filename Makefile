@@ -1,8 +1,16 @@
-build:
-	go build -o bin/client_test cmd/main.go
+ORGANIZATION = josephgorse
+PROJECT = ipam-client
+BINARYNAME = ipam-client
+GOOUT = ./bin
+MAIN = cmd/main.go
 
-run:
-	./bin/client_test
+default: deps build
+
+deps:
+	go get ./...
+
+build:
+		go build -o $(GOOUT)/$(BINARYNAME) $(MAIN)
 
 clean:
-	rm -rf bin/
+	rm -f $(GOOUT)/$(BINARYNAME)

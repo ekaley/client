@@ -8,7 +8,7 @@ import (
 
 //Pools can be used to query the Pools routes
 type Pools struct {
-	c *Client
+	client *Client
 }
 
 //Pools returns a handle to the Pools routes
@@ -18,7 +18,7 @@ func (c *Client) Pools() *Pools {
 
 // Index returns a list of Pools.
 func (p *Pools) Index() (resources.PoolsV1, error) {
-	rPools, err := p.c.ReceiveResource("GET", "/pools", "", "")
+	rPools, err := p.client.ReceiveResource("GET", "/pools", "", "")
 	if err != nil {
 		return resources.PoolsV1{}, err
 	}
@@ -29,41 +29,41 @@ func (p *Pools) Index() (resources.PoolsV1, error) {
 }
 
 // Create a pool and returns the location.
-func (p *Pools) Create(rPool resources.PoolV1) (string, error) {
-	pLocation, err := p.c.SendResource("POST", "/pools", &rPool)
+func (p *Pools) Create(poolToCreate resources.PoolV1) (string, error) {
+	poolLocation, err := p.client.SendResource("POST", "/pools", &poolToCreate)
 	if err != nil {
 		return "", err
 	}
-	return pLocation, nil
+	return poolLocation, nil
 }
 
 // CreateShowPool creates a pool and then returns that pool.
-func (p *Pools) CreateShowPool(rPool resources.PoolV1) (resources.PoolV1, error) {
-	rPoolOut, err := p.c.SendReceiveResource("POST", "GET", "/pools", &rPool)
+func (p *Pools) CreateShowPool(poolToCreate resources.PoolV1) (resources.PoolV1, error) {
+	receivedPool, err := p.client.SendReceiveResource("POST", "GET", "/pools", &poolToCreate)
 	if err != nil {
 		return resources.PoolV1{}, err
 	}
-	if pool, ok := rPoolOut.(*resources.PoolV1); ok {
+	if pool, ok := receivedPool.(*resources.PoolV1); ok {
 		return *pool, nil
 	}
 	return resources.PoolV1{}, errors.New("CreateShowPool call error.")
 }
 
 // Show returns the requested Pool.
-func (p *Pools) Show(pID string, rPoolIn resources.PoolV1) (resources.PoolV1, error) {
-	rPoolOut, err := p.c.ReceiveResource("GET", "/pools/"+pID, rPoolIn.Type(), rPoolIn.Version())
+func (p *Pools) Show(poolID string, rPoolIn resources.PoolV1) (resources.PoolV1, error) {
+	receivedPool, err := p.client.ReceiveResource("GET", "/pools/"+poolID, rPoolIn.Type(), rPoolIn.Version())
 	if err != nil {
 		return resources.PoolV1{}, err
 	}
-	if pool, ok := rPoolOut.(*resources.PoolV1); ok {
+	if pool, ok := receivedPool.(*resources.PoolV1); ok {
 		return *pool, nil
 	}
 	return resources.PoolV1{}, errors.New("Pools Show call error.")
 }
 
 // Update updates the requested Pool and returns its location.
-func (p *Pools) Update(pID string, rPool resources.PoolV1) (string, error) {
-	location, err := p.c.SendResource("PATCH", "/pools/"+pID, &rPool)
+func (p *Pools) Update(poolID string, poolToUpdate resources.PoolV1) (string, error) {
+	location, err := p.client.SendResource("PATCH", "/pools/"+poolID, &poolToUpdate)
 	if err != nil {
 		return "", err
 	}
@@ -71,20 +71,20 @@ func (p *Pools) Update(pID string, rPool resources.PoolV1) (string, error) {
 }
 
 // UpdateShowPool updates a pool and then returns that pool.
-func (p *Pools) UpdateShowPool(pID string, rPool resources.PoolV1) (resources.PoolV1, error) {
-	rPoolOut, err := p.c.SendReceiveResource("PATCH", "GET", "/pools/"+pID, &rPool)
+func (p *Pools) UpdateShowPool(poolID string, poolToUpdate resources.PoolV1) (resources.PoolV1, error) {
+	receivedPool, err := p.client.SendReceiveResource("PATCH", "GET", "/pools/"+poolID, &poolToUpdate)
 	if err != nil {
 		return resources.PoolV1{}, err
 	}
-	if pools, ok := rPoolOut.(*resources.PoolV1); ok {
+	if pools, ok := receivedPool.(*resources.PoolV1); ok {
 		return *pools, nil
 	}
 	return resources.PoolV1{}, errors.New("UpdateShowPool call error.")
 }
 
 // Delete removes the requested Pool and returns the location.
-func (p *Pools) Delete(pID string, rPool resources.PoolV1) (string, error) {
-	location, err := p.c.SendResource("DELETE", "/pools/"+pID, &rPool)
+func (p *Pools) Delete(poolID string, poolToDelete resources.PoolV1) (string, error) {
+	location, err := p.client.SendResource("DELETE", "/pools/"+poolID, &poolToDelete)
 	if err != nil {
 		return "", err
 	}

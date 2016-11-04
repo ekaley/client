@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/RackHD/ipam/resources"
-	"github.com/ekaley/client"
+	"github.com/josephgorse/ipam-client"
 )
 
 var ipam string
@@ -17,10 +17,10 @@ func init() {
 
 func main() {
 	//Bootstrap
-	c := api.NewClient(ipam)
+	ipamClient := api.NewClient(ipam)
 
 	//New Pools
-	p := c.Pools()
+	p := ipamClient.Pools()
 
 	rPool := &resources.PoolV1{
 		Name:     "Pool1",
@@ -34,7 +34,7 @@ func main() {
 
 	time.Sleep(1 * time.Second)
 	//New Subnets
-	s := c.Subnets()
+	s := ipamClient.Subnets()
 
 	rSubnet := &resources.SubnetV1{
 		Name:  "Subnet1",
@@ -56,7 +56,7 @@ func main() {
 
 	time.Sleep(1 * time.Second)
 	//New Reservations
-	r := c.Reservations()
+	r := ipamClient.Reservations()
 
 	rReservation := &resources.ReservationV1{
 		Name:   "Reservation1",
@@ -70,30 +70,30 @@ func main() {
 
 	time.Sleep(1 * time.Second)
 	//New Leases
-	l := c.Leases()
+	l := ipamClient.Leases()
 
-	pI, err := p.Index()
+	poolIndex, err := p.Index()
 	if err != nil {
 	}
-	fmt.Printf("%+v\n\n", pI)
+	fmt.Printf("%+v\n\n", poolIndex)
 	time.Sleep(1 * time.Second)
 
-	sI, err := s.Index(pool.ID)
+	subnetIndex, err := s.Index(pool.ID)
 	if err != nil {
 	}
-	fmt.Printf("%+v\n\n", sI)
+	fmt.Printf("%+v\n\n", subnetIndex)
 	time.Sleep(1 * time.Second)
 
-	rI, err := r.Index(subnet.ID)
+	reservationID, err := r.Index(subnet.ID)
 	if err != nil {
 	}
-	fmt.Printf("%+v\n\n", rI)
+	fmt.Printf("%+v\n\n", reservationID)
 	time.Sleep(1 * time.Second)
 
-	lI, err := l.Index(reservation.ID)
+	leaseIndex, err := l.Index(reservation.ID)
 	if err != nil {
 	}
-	fmt.Printf("%+v\n\n", lI)
+	fmt.Printf("%+v\n\n", leaseIndex)
 
 	fmt.Println("Finished")
 	return
