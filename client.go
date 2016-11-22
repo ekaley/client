@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/go-cleanhttp"
 )
 
-// Client is used to configure the creation of a client
+// Client struct is used to configure the creation of a client
 type Client struct {
 	Address string
 	Scheme  string
@@ -32,7 +32,27 @@ func NewClient(address string) *Client {
 	return c
 }
 
-// SendResource is used to send the passed resource type
+//Leases returns a handle to the Leases routes
+func (c *Client) Leases() *Leases {
+	return &Leases{c}
+}
+
+//Reservations returns a handle to the Reservations routes
+func (c *Client) Reservations() *Reservations {
+	return &Reservations{c}
+}
+
+//Subnets returns a handle to the Subnets routes
+func (c *Client) Subnets() *Subnets {
+	return &Subnets{c}
+}
+
+//Pools returns a handle to the Pools routes
+func (c *Client) Pools() *Pools {
+	return &Pools{c}
+}
+
+// SendResource is used to send a generic resource type
 func (c *Client) SendResource(method, path string, in interfaces.Resource) (string, error) {
 
 	body, err := encodeBody(in)
@@ -64,25 +84,25 @@ func (c *Client) SendResource(method, path string, in interfaces.Resource) (stri
 }
 
 // ReceiveResource is used to receive the passed reasource type
-func (c *Client) ReceiveResource(method, path, rType, rVersion string) (interfaces.Resource, error) {
+func (c *Client) ReceiveResource(method, path, resourceType, resourceVersion string) (interfaces.Resource, error) {
 
 	req, err := http.NewRequest(method, c.Scheme+"://"+c.Address+path, nil)
 
 	req.Header.Set(
 		"Content-Type",
 		mime.FormatMediaType(
-			fmt.Sprintf("%s+%s", rType, "json"),
-			map[string]string{"version": rVersion},
+			fmt.Sprintf("%s+%s", resourceType, "json"),
+			map[string]string{"version": resourceVersion},
 		),
 	)
 
 	client := cleanhttp.DefaultClient()
-	r, err := client.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 
-	mediaType, err := helpers.NewMediaType(r.Header.Get("Content-Type"))
+	mediaType, err := helpers.NewMediaType(resp.Header.Get("Content-Type"))
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +111,7 @@ func (c *Client) ReceiveResource(method, path, rType, rVersion string) (interfac
 		return nil, err
 	}
 
-	err = decodeBody(r, &resource)
+	err = decodeBody(resp, &resource)
 	if err != nil {
 		return nil, err
 	}
